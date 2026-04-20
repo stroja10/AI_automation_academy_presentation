@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 
@@ -64,6 +64,9 @@ export default function App() {
   }, [currentSection, TOTAL_TIME]);
 
   const CurrentComponent = SECTIONS[currentSection].component;
+  
+  // Ochráníme sekci před znovuvykreslením každou vteřinu, když běží timer
+  const memoizedSection = useMemo(() => <CurrentComponent />, [CurrentComponent]);
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body overflow-hidden selection:bg-secondary/30 relative">
@@ -83,7 +86,7 @@ export default function App() {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="w-full"
           >
-            <CurrentComponent />
+            {memoizedSection}
           </motion.div>
         </AnimatePresence>
       </main>
